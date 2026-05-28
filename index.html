@@ -643,7 +643,7 @@
         </div>
       </div>
       <div class="result-actions">
-        <button class="btn btn-primary btn-sm" style="flex:1" onclick="sendToSheet()">
+        <button class="btn btn-primary btn-sm" style="flex:1" onclick="sendToSheet(currentEntryId)">
           ↑ Envoyer vers Sheet
         </button>
         <button class="btn btn-secondary btn-sm" onclick="copyResult()">Copier</button>
@@ -811,6 +811,7 @@ function doPost(e) {
   // ─── STATE ───────────────────────────────────────────────
   let html5QrcodeScanner = null;
   let currentOperation = 'depot';
+  let currentEntryId = null;
   let scanning = false;
   let lastResult = null;
   let history = JSON.parse(localStorage.getItem('scan_history') || '[]');
@@ -926,14 +927,13 @@ function doPost(e) {
 
     // Add to history (pending)
     const entry = { id: Date.now(), value: decodedText, type: format, time: now.toISOString(), status: 'pending', operation: currentOperation };
+    currentEntryId = entry.id;
     history.unshift(entry);
     if (history.length > 200) history.pop();
     saveHistory();
     renderHistory();
 
-    if (config.autoSend) {
-      sendToSheet(entry.id);
-    }
+    // Toujours attendre la sélection Dépôt/Retour avant envoi
 
     if (!config.continuous) stopScanner();
   }
