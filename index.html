@@ -38,7 +38,6 @@
       overflow-x: hidden;
     }
 
-    /* HEADER */
     header {
       padding: 20px 20px 12px;
       display: flex;
@@ -51,536 +50,266 @@
       background: rgba(7,7,13,0.92);
       backdrop-filter: blur(12px);
     }
-
-    .logo {
-      font-family: var(--mono);
-      font-size: 18px;
-      font-weight: 700;
-      letter-spacing: -0.5px;
-      color: var(--text);
-    }
+    .logo { font-family: var(--mono); font-size: 18px; font-weight: 700; letter-spacing: -0.5px; }
     .logo span { color: var(--accent); }
+    .status-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--accent); box-shadow: 0 0 8px var(--accent); }
 
-    .status-dot {
-      width: 8px; height: 8px;
-      border-radius: 50%;
-      background: var(--text-dim);
-      transition: background 0.3s;
-    }
-    .status-dot.connected { background: var(--accent); box-shadow: 0 0 8px var(--accent); }
+    .tabs { display: flex; border-bottom: 1px solid var(--border); background: var(--surface); }
+    .tab { flex: 1; padding: 14px; text-align: center; font-size: 13px; font-weight: 500; color: var(--text-dim); cursor: pointer; transition: all 0.2s; border-bottom: 2px solid transparent; }
+    .tab.active { color: var(--accent); border-bottom-color: var(--accent); background: rgba(0,245,196,0.04); }
 
-    /* TABS */
-    .tabs {
-      display: flex;
+    .panel { display: none; flex: 1; flex-direction: column; overflow-y: auto; }
+    .panel.active { display: flex; }
+
+    /* ── MODE SELECTOR ── */
+    .mode-bar {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0;
       border-bottom: 1px solid var(--border);
       background: var(--surface);
     }
-    .tab {
-      flex: 1;
+    .mode-btn {
       padding: 14px;
       text-align: center;
       font-size: 13px;
-      font-weight: 500;
-      color: var(--text-dim);
+      font-weight: 600;
       cursor: pointer;
-      transition: all 0.2s;
+      color: var(--text-dim);
       border-bottom: 2px solid transparent;
-      letter-spacing: 0.3px;
+      transition: all 0.2s;
+      background: none;
+      border-top: none;
+      border-left: none;
+      border-right: none;
+      font-family: var(--sans);
     }
-    .tab.active {
-      color: var(--accent);
-      border-bottom-color: var(--accent);
-      background: rgba(0,245,196,0.04);
-    }
+    .mode-btn.active { color: var(--accent2); border-bottom-color: var(--accent2); background: rgba(123,92,250,0.04); }
 
-    /* PANELS */
-    .panel { display: none; flex: 1; flex-direction: column; }
-    .panel.active { display: flex; }
-
-    /* SCANNER PANEL */
-    .scanner-section {
-      padding: 20px;
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      gap: 16px;
-    }
+    /* ── SCANNER ── */
+    .scanner-section { padding: 16px; display: flex; flex-direction: column; gap: 14px; }
 
     .camera-container {
-      position: relative;
-      border-radius: 16px;
-      overflow: hidden;
-      border: 1px solid var(--border);
-      background: var(--surface);
-      aspect-ratio: 1;
-      width: 100%;
-      max-width: 360px;
-      margin: 0 auto;
+      position: relative; border-radius: 16px; overflow: hidden;
+      border: 1px solid var(--border); background: var(--surface);
+      aspect-ratio: 1; width: 100%; max-width: 340px; margin: 0 auto;
     }
-
-    #reader {
-      width: 100%;
-      height: 100%;
-    }
-
-    #reader video {
-      object-fit: cover !important;
-      border-radius: 0 !important;
-    }
-
-    /* Override html5-qrcode default styles */
+    #reader { width: 100%; height: 100%; }
+    #reader video { object-fit: cover !important; border-radius: 0 !important; }
     #reader__scan_region { border-radius: 0 !important; }
     #reader__dashboard { display: none !important; }
     #reader img { display: none !important; }
 
-    .scan-overlay {
-      position: absolute;
-      inset: 0;
-      pointer-events: none;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+    .scan-overlay { position: absolute; inset: 0; pointer-events: none; display: flex; align-items: center; justify-content: center; }
+    .scan-frame { width: 60%; aspect-ratio: 1; position: relative; }
+    .scan-frame::before, .scan-frame::after, .scan-frame > span::before, .scan-frame > span::after {
+      content: ''; position: absolute; width: 22px; height: 22px; border-color: var(--accent); border-style: solid;
     }
-
-    .scan-frame {
-      width: 60%;
-      aspect-ratio: 1;
-      position: relative;
-    }
-
-    .scan-frame::before, .scan-frame::after,
-    .scan-frame > span::before, .scan-frame > span::after {
-      content: '';
-      position: absolute;
-      width: 22px; height: 22px;
-      border-color: var(--accent);
-      border-style: solid;
-    }
-    .scan-frame::before { top: 0; left: 0; border-width: 2px 0 0 2px; border-radius: 2px 0 0 0; }
-    .scan-frame::after  { top: 0; right: 0; border-width: 2px 2px 0 0; border-radius: 0 2px 0 0; }
-    .scan-frame > span::before { bottom: 0; left: 0; border-width: 0 0 2px 2px; border-radius: 0 0 0 2px; }
-    .scan-frame > span::after  { bottom: 0; right: 0; border-width: 0 2px 2px 0; border-radius: 0 0 2px 0; }
-
+    .scan-frame::before { top:0;left:0;border-width:2px 0 0 2px;border-radius:2px 0 0 0; }
+    .scan-frame::after  { top:0;right:0;border-width:2px 2px 0 0;border-radius:0 2px 0 0; }
+    .scan-frame > span::before { bottom:0;left:0;border-width:0 0 2px 2px;border-radius:0 0 0 2px; }
+    .scan-frame > span::after  { bottom:0;right:0;border-width:0 2px 2px 0;border-radius:0 0 2px 0; }
     .scan-line {
-      position: absolute;
-      left: 4px; right: 4px;
-      height: 1px;
+      position: absolute; left: 4px; right: 4px; height: 1px;
       background: linear-gradient(90deg, transparent, var(--accent), transparent);
-      animation: scanLine 2s ease-in-out infinite;
-      box-shadow: 0 0 8px var(--accent);
+      animation: scanLine 2s ease-in-out infinite; box-shadow: 0 0 8px var(--accent);
     }
-    @keyframes scanLine {
-      0%   { top: 8%; opacity: 0; }
-      10%  { opacity: 1; }
-      90%  { opacity: 1; }
-      100% { top: 92%; opacity: 0; }
-    }
+    @keyframes scanLine { 0%{top:8%;opacity:0} 10%{opacity:1} 90%{opacity:1} 100%{top:92%;opacity:0} }
 
-    .camera-placeholder {
-      position: absolute;
-      inset: 0;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      gap: 10px;
-      color: var(--text-dim);
-      font-size: 13px;
-    }
+    .camera-placeholder { position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;color:var(--text-dim);font-size:13px; }
+    .camera-icon { width:48px;height:48px;border:2px solid var(--border);border-radius:12px;display:flex;align-items:center;justify-content:center; }
 
-    .camera-icon {
-      width: 48px; height: 48px;
-      border: 2px solid var(--border);
-      border-radius: 12px;
-      display: flex; align-items: center; justify-content: center;
-    }
+    /* ── BUTTONS ── */
+    .btn { border:none;cursor:pointer;font-family:var(--sans);font-weight:600;border-radius:12px;transition:all 0.2s;display:flex;align-items:center;justify-content:center;gap:8px; }
+    .btn-primary { background:var(--accent);color:#07070d;padding:15px 24px;font-size:15px;width:100%; }
+    .btn-primary:active { transform:scale(0.97);background:#00d4aa; }
+    .btn-secondary { background:var(--surface2);color:var(--text);padding:13px 20px;font-size:14px;border:1px solid var(--border); }
+    .btn-danger { background:rgba(255,71,87,0.12);color:var(--danger);padding:13px 20px;font-size:14px;border:1px solid rgba(255,71,87,0.2); }
+    .btn-sm { padding:9px 14px;font-size:13px;border-radius:10px; }
+    .btn-purple { background:var(--accent2);color:#fff;padding:15px 24px;font-size:15px;width:100%; }
+    .btn-purple:active { transform:scale(0.97); }
 
-    /* BUTTONS */
-    .btn {
-      border: none; cursor: pointer;
-      font-family: var(--sans);
-      font-weight: 600;
-      border-radius: 12px;
-      transition: all 0.2s;
-      display: flex; align-items: center; justify-content: center; gap: 8px;
-      letter-spacing: 0.2px;
-    }
-
-    .btn-primary {
-      background: var(--accent);
-      color: #07070d;
-      padding: 15px 24px;
-      font-size: 15px;
-      width: 100%;
-    }
-    .btn-primary:active { transform: scale(0.97); background: #00d4aa; }
-
-    .btn-secondary {
-      background: var(--surface2);
-      color: var(--text);
-      padding: 13px 20px;
-      font-size: 14px;
-      border: 1px solid var(--border);
-    }
-    .btn-secondary:active { background: var(--border); }
-
-    .btn-danger {
-      background: rgba(255,71,87,0.12);
-      color: var(--danger);
-      padding: 13px 20px;
-      font-size: 14px;
-      border: 1px solid rgba(255,71,87,0.2);
-    }
-
-    .btn-sm {
-      padding: 8px 14px;
-      font-size: 12px;
-      border-radius: 8px;
-    }
-
-    /* RESULT CARD */
+    /* ── SINGLE MODE result card ── */
     .result-card {
+      background:var(--surface);border:1px solid var(--border);border-radius:14px;
+      padding:16px;display:none;flex-direction:column;gap:12px;
+      animation:slideUp 0.3s ease;
+    }
+    .result-card.visible { display:flex; }
+    @keyframes slideUp { from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:translateY(0)} }
+
+    .result-label { font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:1px;color:var(--text-dim); }
+    .result-value { font-family:var(--mono);font-size:14px;color:var(--accent);word-break:break-all;line-height:1.5; }
+    .result-type { display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:600;padding:3px 10px;border-radius:20px;background:rgba(123,92,250,0.15);color:var(--accent2);border:1px solid rgba(123,92,250,0.25); }
+
+    .op-selector { display:grid;grid-template-columns:1fr 1fr;gap:8px; }
+    .op-btn { padding:14px 10px;border-radius:12px;font-family:var(--sans);font-size:15px;font-weight:600;cursor:pointer;border:2px solid var(--border);background:var(--surface2);color:var(--text-dim);transition:all 0.2s; }
+    .op-btn.active.op-depot { background:rgba(0,245,196,0.12);border-color:var(--accent);color:var(--accent);box-shadow:0 0 16px rgba(0,245,196,0.15); }
+    .op-btn.active.op-retour { background:rgba(123,92,250,0.12);border-color:var(--accent2);color:var(--accent2);box-shadow:0 0 16px rgba(123,92,250,0.15); }
+    .op-btn:active { transform:scale(0.97); }
+
+    /* ── MULTI MODE ── */
+    .multi-header {
+      padding: 14px 16px;
       background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 14px;
-      padding: 16px;
-      display: none;
-      flex-direction: column;
-      gap: 12px;
-      animation: slideUp 0.3s ease;
-    }
-    .result-card.visible { display: flex; }
-
-    @keyframes slideUp {
-      from { opacity: 0; transform: translateY(10px); }
-      to   { opacity: 1; transform: translateY(0); }
-    }
-
-    .result-label {
-      font-size: 11px;
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      color: var(--text-dim);
-    }
-
-    .result-value {
-      font-family: var(--mono);
-      font-size: 14px;
-      color: var(--accent);
-      word-break: break-all;
-      line-height: 1.5;
-    }
-
-    .result-type {
-      display: inline-flex;
-      align-items: center;
-      gap: 5px;
-      font-size: 11px;
-      font-weight: 600;
-      padding: 3px 10px;
-      border-radius: 20px;
-      background: rgba(123,92,250,0.15);
-      color: var(--accent2);
-      border: 1px solid rgba(123,92,250,0.25);
-    }
-
-    .result-actions { display: flex; gap: 8px; }
-
-    /* TOAST */
-    .toast {
-      position: fixed;
-      bottom: 100px;
-      left: 50%;
-      transform: translateX(-50%) translateY(20px);
-      background: var(--surface2);
-      border: 1px solid var(--border);
-      border-radius: 50px;
-      padding: 12px 20px;
-      font-size: 13px;
-      font-weight: 500;
-      white-space: nowrap;
-      opacity: 0;
-      transition: all 0.3s;
-      z-index: 999;
-      display: flex; align-items: center; gap: 8px;
-    }
-    .toast.show {
-      opacity: 1;
-      transform: translateX(-50%) translateY(0);
-    }
-    .toast.success { border-color: rgba(0,245,196,0.3); color: var(--accent); }
-    .toast.error { border-color: rgba(255,71,87,0.3); color: var(--danger); }
-
-    /* HISTORY PANEL */
-    .history-section {
-      padding: 16px 20px;
-      flex: 1;
-      overflow-y: auto;
-    }
-
-    .history-header {
+      border-bottom: 1px solid var(--border);
       display: flex;
       align-items: center;
       justify-content: space-between;
-      margin-bottom: 16px;
+      gap: 10px;
     }
 
-    .history-title {
-      font-size: 13px;
-      font-weight: 600;
-      color: var(--text-dim);
-      text-transform: uppercase;
-      letter-spacing: 1px;
+    .multi-op-pills { display:flex;gap:8px; }
+    .multi-op-pill {
+      padding: 8px 16px; border-radius: 50px; font-size: 13px; font-weight: 600;
+      cursor: pointer; border: 2px solid var(--border); background: var(--surface2);
+      color: var(--text-dim); transition: all 0.2s; font-family: var(--sans);
     }
+    .multi-op-pill.active-depot { background:rgba(0,245,196,0.12);border-color:var(--accent);color:var(--accent); }
+    .multi-op-pill.active-retour { background:rgba(123,92,250,0.12);border-color:var(--accent2);color:var(--accent2); }
 
-    .history-count {
+    .multi-counter {
       font-family: var(--mono);
-      font-size: 11px;
-      color: var(--text-dim);
-      background: var(--surface2);
-      padding: 3px 8px;
-      border-radius: 20px;
-      border: 1px solid var(--border);
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--accent);
+      min-width: 40px;
+      text-align: right;
     }
+    .multi-counter.retour { color: var(--accent2); }
+    .multi-counter-label { font-size: 10px; color: var(--text-dim); text-align: right; line-height: 1; }
 
-    .history-item {
+    .multi-list-wrap { flex:1; overflow-y:auto; padding: 12px 16px; display:flex;flex-direction:column;gap:8px; }
+
+    .multi-item {
       background: var(--surface);
       border: 1px solid var(--border);
       border-radius: 12px;
-      padding: 14px;
-      margin-bottom: 8px;
+      padding: 12px 14px;
       display: flex;
-      align-items: flex-start;
-      gap: 12px;
-      animation: slideUp 0.25s ease;
+      align-items: center;
+      gap: 10px;
+      animation: slideUp 0.2s ease;
     }
-
-    .history-item-icon {
-      width: 36px; height: 36px;
-      border-radius: 8px;
-      background: rgba(0,245,196,0.08);
-      border: 1px solid rgba(0,245,196,0.15);
-      display: flex; align-items: center; justify-content: center;
-      flex-shrink: 0;
-      font-size: 16px;
+    .multi-item-num {
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--text-dim);
+      min-width: 20px;
     }
-
-    .history-item.sent .history-item-icon {
-      background: rgba(0,245,196,0.12);
-    }
-
-    .history-item.failed .history-item-icon {
-      background: rgba(255,71,87,0.08);
-      border-color: rgba(255,71,87,0.15);
-    }
-
-    .history-item-content { flex: 1; min-width: 0; }
-
-    .history-item-value {
+    .multi-item-value {
       font-family: var(--mono);
       font-size: 13px;
       color: var(--text);
+      flex: 1;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
-      margin-bottom: 4px;
     }
-
-    .history-item-meta {
-      display: flex; align-items: center; gap: 8px;
-      flex-wrap: wrap;
-    }
-
-    .history-item-time {
-      font-size: 11px;
-      color: var(--text-dim);
-    }
-
-    .badge {
+    .multi-item-type {
       font-size: 10px;
-      font-weight: 600;
+      color: var(--text-dim);
+      background: var(--surface2);
       padding: 2px 7px;
       border-radius: 20px;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
     }
-    .badge-sent { background: rgba(0,245,196,0.1); color: var(--accent); }
-    .badge-failed { background: rgba(255,71,87,0.1); color: var(--danger); }
-    .badge-pending { background: rgba(255,165,0,0.1); color: #ffa500; }
+    .multi-item-del {
+      background: none; border: none; color: var(--text-dim); cursor: pointer;
+      font-size: 16px; padding: 2px 4px; border-radius: 6px; transition: color 0.2s;
+    }
+    .multi-item-del:active { color: var(--danger); }
 
-    .empty-state {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      gap: 12px;
-      padding: 60px 20px;
-      color: var(--text-dim);
-      font-size: 14px;
-      text-align: center;
+    .multi-empty {
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      gap: 10px; padding: 40px 20px; color: var(--text-dim); font-size: 13px; text-align: center;
     }
 
-    .empty-icon { font-size: 40px; opacity: 0.5; }
-
-    /* CONFIG PANEL */
-    .config-section {
-      padding: 20px;
-      flex: 1;
-      overflow-y: auto;
-      display: flex;
-      flex-direction: column;
-      gap: 20px;
-    }
-
-    .config-group {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 14px;
-      overflow: hidden;
-    }
-
-    .config-group-title {
-      padding: 12px 16px;
-      font-size: 11px;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 1.2px;
-      color: var(--text-dim);
-      border-bottom: 1px solid var(--border);
-      background: rgba(255,255,255,0.02);
-    }
-
-    .config-row {
+    .multi-footer {
       padding: 14px 16px;
-      border-bottom: 1px solid var(--border);
-    }
-    .config-row:last-child { border-bottom: none; }
-
-    .config-row label {
-      display: block;
-      font-size: 13px;
-      font-weight: 500;
-      color: var(--text);
-      margin-bottom: 8px;
-    }
-
-    .config-row small {
-      display: block;
-      font-size: 11px;
-      color: var(--text-dim);
-      margin-top: 4px;
-      line-height: 1.5;
-    }
-
-    .input {
-      width: 100%;
+      border-top: 1px solid var(--border);
       background: var(--bg);
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      padding: 12px 14px;
-      color: var(--text);
-      font-family: var(--mono);
-      font-size: 13px;
-      transition: border-color 0.2s;
-      outline: none;
-    }
-    .input:focus { border-color: var(--accent); }
-    .input::placeholder { color: var(--text-dim); font-family: var(--sans); font-size: 13px; }
-
-    .toggle-row {
       display: flex;
-      align-items: center;
-      justify-content: space-between;
+      flex-direction: column;
+      gap: 10px;
     }
 
-    .toggle {
-      width: 44px; height: 26px;
-      background: var(--surface2);
-      border-radius: 13px;
-      position: relative;
-      cursor: pointer;
-      transition: background 0.3s;
-      border: 1px solid var(--border);
-      flex-shrink: 0;
+    .multi-send-btn {
+      background: var(--accent); color: #07070d; padding: 16px; font-size: 16px;
+      font-weight: 700; border: none; border-radius: 14px; cursor: pointer;
+      font-family: var(--sans); transition: all 0.2s; width: 100%;
+      display: flex; align-items: center; justify-content: center; gap: 8px;
     }
-    .toggle.on { background: var(--accent); border-color: var(--accent); }
-    .toggle::after {
-      content: '';
-      position: absolute;
-      width: 20px; height: 20px;
-      border-radius: 50%;
-      background: #fff;
-      top: 2px; left: 2px;
-      transition: transform 0.3s;
+    .multi-send-btn.retour { background: var(--accent2); color: #fff; }
+    .multi-send-btn:active { transform: scale(0.97); }
+    .multi-send-btn:disabled { opacity: 0.4; pointer-events: none; }
+
+    .multi-scan-btn {
+      background: var(--surface2); color: var(--text); padding: 13px; font-size: 14px;
+      font-weight: 600; border: 1px solid var(--border); border-radius: 12px; cursor: pointer;
+      font-family: var(--sans); transition: all 0.2s; width: 100%;
+      display: flex; align-items: center; justify-content: center; gap: 8px;
     }
-    .toggle.on::after { transform: translateX(18px); }
+    .multi-scan-btn.scanning { border-color: var(--danger); color: var(--danger); background: rgba(255,71,87,0.08); }
+    .multi-scan-btn:active { transform: scale(0.97); }
 
-    .save-btn-wrap { padding: 0 0 20px; }
+    /* ── HISTORY ── */
+    .history-section { padding: 16px 20px; flex: 1; overflow-y: auto; }
+    .history-header { display:flex;align-items:center;justify-content:space-between;margin-bottom:16px; }
+    .history-title { font-size:13px;font-weight:600;color:var(--text-dim);text-transform:uppercase;letter-spacing:1px; }
+    .history-count { font-family:var(--mono);font-size:11px;color:var(--text-dim);background:var(--surface2);padding:3px 8px;border-radius:20px;border:1px solid var(--border); }
 
-    /* PULSE animation when scan success */
-    @keyframes pulse-border {
-      0%   { box-shadow: 0 0 0 0 rgba(0,245,196,0.5); }
-      70%  { box-shadow: 0 0 0 12px rgba(0,245,196,0); }
-      100% { box-shadow: 0 0 0 0 rgba(0,245,196,0); }
-    }
-    .camera-container.pulse { animation: pulse-border 0.6s ease-out; }
+    .history-item { background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:14px;margin-bottom:8px;display:flex;align-items:flex-start;gap:12px;animation:slideUp 0.25s ease; }
+    .history-item-icon { width:36px;height:36px;border-radius:8px;background:rgba(0,245,196,0.08);border:1px solid rgba(0,245,196,0.15);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:16px; }
+    .history-item-content { flex:1;min-width:0; }
+    .history-item-value { font-family:var(--mono);font-size:13px;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-bottom:4px; }
+    .history-item-meta { display:flex;align-items:center;gap:6px;flex-wrap:wrap; }
+    .history-item-time { font-size:11px;color:var(--text-dim); }
+    .badge { font-size:10px;font-weight:600;padding:2px 7px;border-radius:20px;text-transform:uppercase;letter-spacing:0.5px; }
+    .badge-sent { background:rgba(0,245,196,0.1);color:var(--accent); }
+    .badge-failed { background:rgba(255,71,87,0.1);color:var(--danger); }
+    .badge-depot { background:rgba(0,245,196,0.1);color:var(--accent); }
+    .badge-retour { background:rgba(123,92,250,0.1);color:var(--accent2); }
+    .badge-multi { background:rgba(255,165,0,0.1);color:#ffa500; }
 
-    .conn-test {
-      display: flex; align-items: center; gap: 8px;
-      padding: 10px 14px;
-      background: var(--bg);
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      font-size: 13px;
-      color: var(--text-dim);
-    }
-    .conn-test.ok { color: var(--accent); border-color: rgba(0,245,196,0.3); }
-    .conn-test.fail { color: var(--danger); border-color: rgba(255,71,87,0.3); }
+    .empty-state { display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;padding:60px 20px;color:var(--text-dim);font-size:14px;text-align:center; }
+    .empty-icon { font-size:40px;opacity:0.5; }
 
-    /* OPERATION SELECTOR */
-    .operation-selector {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 8px;
-    }
+    /* ── CONFIG ── */
+    .config-section { padding:20px;flex:1;overflow-y:auto;display:flex;flex-direction:column;gap:20px; }
+    .config-group { background:var(--surface);border:1px solid var(--border);border-radius:14px;overflow:hidden; }
+    .config-group-title { padding:12px 16px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1.2px;color:var(--text-dim);border-bottom:1px solid var(--border);background:rgba(255,255,255,0.02); }
+    .config-row { padding:14px 16px;border-bottom:1px solid var(--border); }
+    .config-row:last-child { border-bottom:none; }
+    .config-row label { display:block;font-size:13px;font-weight:500;color:var(--text);margin-bottom:8px; }
+    .config-row small { display:block;font-size:11px;color:var(--text-dim);margin-top:4px;line-height:1.5; }
+    .input { width:100%;background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:12px 14px;color:var(--text);font-family:var(--mono);font-size:13px;transition:border-color 0.2s;outline:none; }
+    .input:focus { border-color:var(--accent); }
+    .input::placeholder { color:var(--text-dim);font-family:var(--sans);font-size:13px; }
+    .toggle-row { display:flex;align-items:center;justify-content:space-between; }
+    .toggle { width:44px;height:26px;background:var(--surface2);border-radius:13px;position:relative;cursor:pointer;transition:background 0.3s;border:1px solid var(--border);flex-shrink:0; }
+    .toggle.on { background:var(--accent);border-color:var(--accent); }
+    .toggle::after { content:'';position:absolute;width:20px;height:20px;border-radius:50%;background:#fff;top:2px;left:2px;transition:transform 0.3s; }
+    .toggle.on::after { transform:translateX(18px); }
 
-    .op-btn {
-      padding: 14px 10px;
-      border-radius: 12px;
-      font-family: var(--sans);
-      font-size: 15px;
-      font-weight: 600;
-      cursor: pointer;
-      border: 2px solid var(--border);
-      background: var(--surface2);
-      color: var(--text-dim);
-      transition: all 0.2s;
-      letter-spacing: 0.2px;
-    }
+    /* ── TOAST ── */
+    .toast { position:fixed;bottom:100px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--surface2);border:1px solid var(--border);border-radius:50px;padding:12px 20px;font-size:13px;font-weight:500;white-space:nowrap;opacity:0;transition:all 0.3s;z-index:999;display:flex;align-items:center;gap:8px; }
+    .toast.show { opacity:1;transform:translateX(-50%) translateY(0); }
+    .toast.success { border-color:rgba(0,245,196,0.3);color:var(--accent); }
+    .toast.error { border-color:rgba(255,71,87,0.3);color:var(--danger); }
 
-    .op-btn.active.op-depot {
-      background: rgba(0,245,196,0.12);
-      border-color: var(--accent);
-      color: var(--accent);
-      box-shadow: 0 0 16px rgba(0,245,196,0.15);
-    }
+    @keyframes pulse-border { 0%{box-shadow:0 0 0 0 rgba(0,245,196,0.5)} 70%{box-shadow:0 0 0 12px rgba(0,245,196,0)} 100%{box-shadow:0 0 0 0 rgba(0,245,196,0)} }
+    .camera-container.pulse { animation:pulse-border 0.6s ease-out; }
 
-    .op-btn.active.op-retour {
-      background: rgba(123,92,250,0.12);
-      border-color: var(--accent2);
-      color: var(--accent2);
-      box-shadow: 0 0 16px rgba(123,92,250,0.15);
-    }
-
-    .op-btn:active { transform: scale(0.97); }
+    .progress-bar-wrap { height:3px;background:var(--border);border-radius:2px;overflow:hidden; }
+    .progress-bar { height:100%;background:var(--accent);border-radius:2px;transition:width 0.3s; }
+    .progress-bar.retour { background:var(--accent2); }
   </style>
 </head>
 <body>
 
 <header>
   <div class="logo">Scan<span>Sheet</span></div>
-  <div class="status-dot" id="statusDot" title="Non connecté"></div>
+  <div class="status-dot" title="Connecté"></div>
 </header>
 
 <div class="tabs">
@@ -591,67 +320,105 @@
 
 <!-- SCANNER PANEL -->
 <div class="panel active" id="panel-scanner">
-  <div class="scanner-section">
 
-    <div class="camera-container" id="cameraContainer">
-      <div id="reader"></div>
-      <div class="camera-placeholder" id="placeholder">
-        <div class="camera-icon">
-          <svg width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
-            <path d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"/>
-            <circle cx="12" cy="13" r="3"/>
-          </svg>
-        </div>
-        <span>Appuyez pour scanner</span>
-      </div>
-      <div class="scan-overlay" id="scanOverlay" style="display:none">
-        <div class="scan-frame">
-          <span></span>
-          <div class="scan-line"></div>
-        </div>
-      </div>
-    </div>
-
-    <button class="btn btn-primary" id="scanBtn" onclick="toggleScanner()">
-      <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-        <path d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"/>
-        <circle cx="12" cy="13" r="3"/>
-      </svg>
-      Démarrer le scan
-    </button>
-
-    <!-- RESULT CARD -->
-    <div class="result-card" id="resultCard">
-      <div>
-        <div class="result-label">Résultat</div>
-        <div class="result-value" id="resultValue">—</div>
-      </div>
-      <div style="display:flex;align-items:center;justify-content:space-between">
-        <span class="result-type" id="resultType">—</span>
-        <span style="font-size:11px;color:var(--text-dim)" id="resultTime">—</span>
-      </div>
-      <!-- TYPE SELECTOR -->
-      <div>
-        <div class="result-label" style="margin-bottom:8px">Type d'opération</div>
-        <div class="operation-selector">
-          <button class="op-btn op-depot active" id="opDepot" onclick="selectOperation('depot')">
-            📥 Dépôt
-          </button>
-          <button class="op-btn op-retour" id="opRetour" onclick="selectOperation('retour')">
-            📤 Retour
-          </button>
-        </div>
-      </div>
-      <div class="result-actions">
-        <button class="btn btn-primary btn-sm" style="flex:1" onclick="sendToSheet(currentEntryId)">
-          ↑ Envoyer vers Sheet
-        </button>
-        <button class="btn btn-secondary btn-sm" onclick="copyResult()">Copier</button>
-      </div>
-      <div id="sendStatus"></div>
-    </div>
-
+  <!-- MODE BAR -->
+  <div class="mode-bar">
+    <button class="mode-btn active" id="modeSimple" onclick="switchMode('simple')">🔲 Scan unique</button>
+    <button class="mode-btn" id="modeMulti" onclick="switchMode('multi')">📦 Multi-scan</button>
   </div>
+
+  <!-- ══ SINGLE MODE ══ -->
+  <div id="singleMode">
+    <div class="scanner-section">
+      <div class="camera-container" id="cameraContainer">
+        <div id="reader"></div>
+        <div class="camera-placeholder" id="placeholder">
+          <div class="camera-icon">
+            <svg width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+              <path d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"/>
+              <circle cx="12" cy="13" r="3"/>
+            </svg>
+          </div>
+          <span>Appuyez pour scanner</span>
+        </div>
+        <div class="scan-overlay" id="scanOverlay" style="display:none">
+          <div class="scan-frame"><span></span><div class="scan-line"></div></div>
+        </div>
+      </div>
+
+      <button class="btn btn-primary" id="scanBtn" onclick="toggleScanner()">
+        <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"/>
+          <circle cx="12" cy="13" r="3"/>
+        </svg>
+        Démarrer le scan
+      </button>
+
+      <div class="result-card" id="resultCard">
+        <div>
+          <div class="result-label">Résultat</div>
+          <div class="result-value" id="resultValue">—</div>
+        </div>
+        <div style="display:flex;align-items:center;justify-content:space-between">
+          <span class="result-type" id="resultType">—</span>
+          <span style="font-size:11px;color:var(--text-dim)" id="resultTime">—</span>
+        </div>
+        <div>
+          <div class="result-label" style="margin-bottom:8px">Type d'opération</div>
+          <div class="op-selector">
+            <button class="op-btn op-depot active" id="opDepot" onclick="selectOperation('depot')">📥 Dépôt</button>
+            <button class="op-btn op-retour" id="opRetour" onclick="selectOperation('retour')">📤 Retour</button>
+          </div>
+        </div>
+        <div style="display:flex;gap:8px">
+          <button class="btn btn-primary btn-sm" style="flex:1" onclick="sendSingle()">↑ Envoyer</button>
+          <button class="btn btn-secondary btn-sm" onclick="copyResult()">Copier</button>
+        </div>
+        <div id="sendStatus"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ MULTI MODE ══ -->
+  <div id="multiMode" style="display:none;flex-direction:column;flex:1">
+
+    <div class="multi-header">
+      <div class="multi-op-pills">
+        <button class="multi-op-pill active-depot" id="multiOpDepot" onclick="setMultiOp('depot')">📥 Dépôt</button>
+        <button class="multi-op-pill" id="multiOpRetour" onclick="setMultiOp('retour')">📤 Retour</button>
+      </div>
+      <div style="text-align:right">
+        <div class="multi-counter" id="multiCounter">0</div>
+        <div class="multi-counter-label">scans</div>
+      </div>
+    </div>
+
+    <div class="multi-list-wrap" id="multiList">
+      <div class="multi-empty" id="multiEmpty">
+        <div style="font-size:32px">📭</div>
+        <div>Aucun scan</div>
+        <div style="font-size:12px;color:var(--text-dim)">Démarrez le scan pour remplir la liste</div>
+      </div>
+    </div>
+
+    <div class="multi-footer">
+      <div class="progress-bar-wrap" id="multiProgress" style="display:none">
+        <div class="progress-bar" id="multiProgressBar" style="width:0%"></div>
+      </div>
+      <button class="multi-send-btn" id="multiSendBtn" onclick="sendMulti()" disabled>
+        ↑ Envoyer 0 scan(s) vers Sheet
+      </button>
+      <button class="multi-scan-btn" id="multiScanBtn" onclick="toggleMultiScanner()">
+        📷 Démarrer le scan
+      </button>
+
+      <!-- Caméra cachée pour multi -->
+      <div style="height:0;overflow:hidden">
+        <div id="readerMulti"></div>
+      </div>
+    </div>
+  </div>
+
 </div>
 
 <!-- HISTORY PANEL -->
@@ -662,11 +429,7 @@
       <span class="history-count" id="historyCount">0</span>
     </div>
     <div id="historyList">
-      <div class="empty-state">
-        <div class="empty-icon">📭</div>
-        <div>Aucun scan pour le moment</div>
-        <div style="font-size:12px;color:var(--text-dim)">Vos scans apparaîtront ici</div>
-      </div>
+      <div class="empty-state"><div class="empty-icon">📭</div><div>Aucun scan pour le moment</div></div>
     </div>
   </div>
 </div>
@@ -674,439 +437,415 @@
 <!-- CONFIG PANEL -->
 <div class="panel" id="panel-config">
   <div class="config-section">
-
     <div class="config-group">
       <div class="config-group-title">🔗 Google Sheets</div>
-
       <div class="config-row">
         <label>URL du Web App Script</label>
         <input class="input" id="cfgWebAppUrl" placeholder="https://script.google.com/macros/s/..." />
-        <small>URL de déploiement de votre Google Apps Script (voir instructions ci-dessous)</small>
+        <small>URL de déploiement de votre Google Apps Script</small>
       </div>
-
       <div class="config-row">
         <label>Nom de la feuille (optionnel)</label>
         <input class="input" id="cfgSheetName" placeholder="Feuille1" />
-        <small>Laissez vide pour utiliser la feuille active</small>
-      </div>
-
-      <div class="config-row" id="connTestRow" style="display:none">
-        <div class="conn-test" id="connTestResult">—</div>
       </div>
     </div>
 
     <div class="config-group">
-      <div class="config-group-title">📊 Colonnes à envoyer</div>
-
+      <div class="config-group-title">📊 Colonnes</div>
       <div class="config-row">
         <div class="toggle-row">
-          <div>
-            <label style="margin:0">Horodatage</label>
-            <small style="margin:0">Date et heure du scan</small>
-          </div>
+          <div><label style="margin:0">Horodatage</label><small style="margin:0">Date et heure</small></div>
           <div class="toggle on" id="togTimestamp" onclick="toggle('togTimestamp')"></div>
         </div>
       </div>
-
       <div class="config-row">
         <div class="toggle-row">
-          <div>
-            <label style="margin:0">Type de code</label>
-            <small style="margin:0">QR_CODE, EAN_13, CODE_128…</small>
-          </div>
+          <div><label style="margin:0">Type de code</label><small style="margin:0">QR, EAN-13…</small></div>
           <div class="toggle on" id="togType" onclick="toggle('togType')"></div>
         </div>
-      </div>
-
-      <div class="config-row">
-        <div class="toggle-row">
-          <div>
-            <label style="margin:0">Valeur scannée</label>
-            <small style="margin:0">Le contenu du code</small>
-          </div>
-          <div class="toggle on" id="togValue" onclick="toggle('togValue')" style="pointer-events:none;opacity:0.5"></div>
-        </div>
-      </div>
-
-      <div class="config-row">
-        <label>Colonne de départ (ex: A)</label>
-        <input class="input" id="cfgStartCol" placeholder="A" maxlength="2" style="width:80px" />
       </div>
     </div>
 
     <div class="config-group">
       <div class="config-group-title">🔔 Comportement</div>
-
       <div class="config-row">
         <div class="toggle-row">
-          <div>
-            <label style="margin:0">Envoi automatique</label>
-            <small style="margin:0">Envoyer dès la détection</small>
-          </div>
-          <div class="toggle on" id="togAutoSend" onclick="toggle('togAutoSend')"></div>
-        </div>
-      </div>
-
-      <div class="config-row">
-        <div class="toggle-row">
-          <div>
-            <label style="margin:0">Vibration</label>
-            <small style="margin:0">Vibrer après chaque scan</small>
-          </div>
+          <div><label style="margin:0">Vibration</label><small style="margin:0">Vibrer après chaque scan</small></div>
           <div class="toggle on" id="togVibrate" onclick="toggle('togVibrate')"></div>
         </div>
       </div>
-
-      <div class="config-row">
-        <div class="toggle-row">
-          <div>
-            <label style="margin:0">Continuer après scan</label>
-            <small style="margin:0">Rescanner automatiquement</small>
-          </div>
-          <div class="toggle" id="togContinuous" onclick="toggle('togContinuous')"></div>
-        </div>
-      </div>
     </div>
 
-    <div class="config-group">
-      <div class="config-group-title">📖 Instructions</div>
-      <div class="config-row">
-        <small style="line-height:1.7;color:var(--text-mid)">
-          <strong style="color:var(--text)">1.</strong> Ouvrez <strong style="color:var(--accent)">Google Sheets</strong> et créez un nouveau classeur.<br><br>
-          <strong style="color:var(--text)">2.</strong> Allez dans <strong style="color:var(--accent)">Extensions → Apps Script</strong>.<br><br>
-          <strong style="color:var(--text)">3.</strong> Collez ce code dans l'éditeur :<br>
-          <code id="scriptCode" style="display:block;background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:10px;margin:8px 0;font-size:11px;line-height:1.6;color:var(--accent);word-break:break-all;">
-function doPost(e) {
-  var sheet = SpreadsheetApp.getActiveSpreadsheet()
-    .getSheetByName(e.parameter.sheet || 
-    SpreadsheetApp.getActiveSpreadsheet().getSheets()[0].getName());
-  var row = [e.parameter.timestamp, e.parameter.type, e.parameter.value];
-  sheet.appendRow(row);
-  return ContentService
-    .createTextOutput(JSON.stringify({status:'ok'}))
-    .setMimeType(ContentService.MimeType.JSON);
-}
-          </code>
-          <strong style="color:var(--text)">4.</strong> Cliquez <strong style="color:var(--accent)">Déployer → Nouveau déploiement</strong>.<br><br>
-          <strong style="color:var(--text)">5.</strong> Choisissez <em>Application Web</em>, accès <strong style="color:var(--accent)">Tout le monde</strong>.<br><br>
-          <strong style="color:var(--text)">6.</strong> Copiez l'URL de déploiement et collez-la ci-dessus.
-        </small>
-        <button class="btn btn-secondary btn-sm" style="margin-top:10px;width:100%" onclick="copyScript()">📋 Copier le code Apps Script</button>
-      </div>
+    <div style="padding-bottom:20px">
+      <button class="btn btn-primary" onclick="saveConfig()">✓ Sauvegarder</button>
     </div>
-
-    <div class="save-btn-wrap">
-      <button class="btn btn-primary" onclick="saveConfig()">
-        ✓ Sauvegarder la configuration
-      </button>
-    </div>
-
   </div>
 </div>
 
-<!-- TOAST -->
 <div class="toast" id="toast"></div>
 
 <script>
-  // ─── STATE ───────────────────────────────────────────────
-  let html5QrcodeScanner = null;
-  let currentOperation = 'depot';
-  let currentEntryId = null;
-  let scanning = false;
-  let lastResult = null;
-  let history = JSON.parse(localStorage.getItem('scan_history') || '[]');
-  let config = JSON.parse(localStorage.getItem('scan_config') || JSON.stringify({
-    webAppUrl: 'https://script.google.com/macros/s/AKfycbzo_jsAIASq3LYyxFUvQ__6Bf4KCqmssVhfdwCXKOyeUOhCqDEkWL4SshmkqFTl3-pj/exec',
+  // ── CONFIG ──────────────────────────────────────────────
+  const DEFAULT_URL = 'https://script.google.com/macros/s/AKfycbzo_jsAIASq3LYyxFUvQ__6Bf4KCqmssVhfdwCXKOyeUOhCqDEkWL4SshmkqFTl3-pj/exec';
+
+  let config = JSON.parse(localStorage.getItem('scan_config') || 'null') || {
+    webAppUrl: DEFAULT_URL,
     sheetName: '',
-    startCol: 'A',
     timestamp: true,
     type: true,
-    autoSend: true,
     vibrate: true,
-    continuous: false,
-  }));
-
-  // ─── INIT ────────────────────────────────────────────────
-  window.onload = () => {
-    loadConfig();
-    renderHistory();
-    updateStatus();
   };
 
-  // ─── TABS ────────────────────────────────────────────────
+  // ── STATE ────────────────────────────────────────────────
+  let scanner = null;
+  let scanning = false;
+  let scannerMulti = null;
+  let scanningMulti = false;
+  let lastResult = null;
+  let currentOperation = 'depot';
+  let currentEntryId = null;
+  let multiOperation = 'depot';
+  let multiQueue = [];           // { value, type, time }
+  let history = JSON.parse(localStorage.getItem('scan_history') || '[]');
+  let currentMode = 'simple';
+  let lastMultiScan = '';        // debounce duplicate scans
+
+  window.onload = () => { loadConfig(); renderHistory(); };
+
+  // ── TABS & MODE ──────────────────────────────────────────
   function switchTab(name) {
-    document.querySelectorAll('.tab').forEach((t,i) => {
-      const names = ['scanner','history','config'];
-      t.classList.toggle('active', names[i] === name);
+    ['scanner','history','config'].forEach((n,i) => {
+      document.querySelectorAll('.tab')[i].classList.toggle('active', n === name);
+      document.getElementById('panel-' + n).classList.toggle('active', n === name);
     });
-    document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
-    document.getElementById('panel-' + name).classList.add('active');
-    if (name !== 'scanner' && scanning) stopScanner();
+    if (name !== 'scanner') { stopScanner(); stopMultiScanner(); }
   }
 
-  // ─── SCANNER ─────────────────────────────────────────────
-  function selectOperation(op) {
-    currentOperation = op;
-    document.getElementById('opDepot').classList.toggle('active', op === 'depot');
-    document.getElementById('opRetour').classList.toggle('active', op === 'retour');
+  function switchMode(mode) {
+    currentMode = mode;
+    document.getElementById('modeSimple').classList.toggle('active', mode === 'simple');
+    document.getElementById('modeMulti').classList.toggle('active', mode === 'multi');
+    document.getElementById('singleMode').style.display = mode === 'simple' ? 'block' : 'none';
+    document.getElementById('multiMode').style.display  = mode === 'multi'  ? 'flex'  : 'none';
+    if (mode === 'simple') stopMultiScanner();
+    else stopScanner();
   }
 
+  // ── SINGLE SCANNER ───────────────────────────────────────
   function toggleScanner() {
-    if (scanning) stopScanner();
-    else startScanner();
+    scanning ? stopScanner() : startScanner();
   }
 
   function startScanner() {
-    const placeholder = document.getElementById('placeholder');
-    const overlay = document.getElementById('scanOverlay');
+    document.getElementById('placeholder').style.display = 'none';
+    document.getElementById('scanOverlay').style.display = 'flex';
     const btn = document.getElementById('scanBtn');
-
-    placeholder.style.display = 'none';
-    overlay.style.display = 'flex';
-    btn.innerHTML = `<svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><rect x="4" y="4" width="16" height="16" rx="2"/></svg> Arrêter`;
-    btn.style.background = 'rgba(255,71,87,0.15)';
-    btn.style.color = 'var(--danger)';
-    btn.style.border = '1px solid rgba(255,71,87,0.3)';
-
-    html5QrcodeScanner = new Html5Qrcode("reader");
-    const qrConfig = { fps: 10, qrbox: { width: 220, height: 220 }, aspectRatio: 1.0 };
-
-    html5QrcodeScanner.start(
-      { facingMode: "environment" },
-      qrConfig,
-      onScanSuccess,
-      () => {}
-    ).then(() => {
-      scanning = true;
-    }).catch(err => {
-      showToast('❌ Caméra inaccessible : ' + err, 'error');
-      resetScanUI();
-    });
+    btn.innerHTML = '⏹ Arrêter'; btn.style.cssText = 'background:rgba(255,71,87,0.15);color:var(--danger);border:1px solid rgba(255,71,87,0.3);width:100%';
+    scanner = new Html5Qrcode("reader");
+    scanner.start({ facingMode:"environment" }, { fps:10, qrbox:{width:220,height:220} }, onScanSuccess, ()=>{})
+      .then(() => scanning = true)
+      .catch(err => { showToast('❌ Caméra inaccessible', 'error'); resetScanUI(); });
   }
 
   function stopScanner() {
-    if (html5QrcodeScanner && scanning) {
-      html5QrcodeScanner.stop().catch(() => {});
-    }
+    if (scanner && scanning) scanner.stop().catch(()=>{});
     resetScanUI();
   }
 
   function resetScanUI() {
     scanning = false;
     const btn = document.getElementById('scanBtn');
-    btn.innerHTML = `<svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"/><circle cx="12" cy="13" r="3"/></svg> Démarrer le scan`;
-    btn.style.background = '';
-    btn.style.color = '';
-    btn.style.border = '';
+    btn.innerHTML = '<svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"/><circle cx="12" cy="13" r="3"/></svg> Démarrer le scan';
+    btn.style.cssText = '';
     document.getElementById('placeholder').style.display = 'flex';
     document.getElementById('scanOverlay').style.display = 'none';
   }
 
-  function onScanSuccess(decodedText, decodedResult) {
-    const format = decodedResult.result?.format?.formatName || 'UNKNOWN';
+  function onScanSuccess(text, result) {
+    const format = result.result?.format?.formatName || 'UNKNOWN';
     const now = new Date();
-
-    if (config.vibrate && navigator.vibrate) navigator.vibrate([50, 20, 50]);
-
-    // Pulse animation
+    if (config.vibrate && navigator.vibrate) navigator.vibrate([50,20,50]);
     const cam = document.getElementById('cameraContainer');
-    cam.classList.add('pulse');
-    setTimeout(() => cam.classList.remove('pulse'), 700);
-
-    lastResult = { value: decodedText, type: format, time: now };
-
-    // Show result card
+    cam.classList.add('pulse'); setTimeout(()=>cam.classList.remove('pulse'),700);
+    lastResult = { value: text, type: format, time: now };
     currentOperation = 'depot';
     document.getElementById('opDepot').classList.add('active');
     document.getElementById('opRetour').classList.remove('active');
     document.getElementById('resultCard').classList.add('visible');
-    document.getElementById('resultValue').textContent = decodedText;
+    document.getElementById('resultValue').textContent = text;
     document.getElementById('resultType').textContent = format;
     document.getElementById('resultTime').textContent = formatTime(now);
     document.getElementById('sendStatus').innerHTML = '';
-
-    // Add to history (pending)
-    const entry = { id: Date.now(), value: decodedText, type: format, time: now.toISOString(), status: 'pending', operation: currentOperation };
+    const entry = { id: Date.now(), value: text, type: format, time: now.toISOString(), status: 'pending', operation: 'depot', mode: 'single' };
     currentEntryId = entry.id;
-    history.unshift(entry);
-    if (history.length > 200) history.pop();
-    saveHistory();
-    renderHistory();
-
-    // Toujours attendre la sélection Dépôt/Retour avant envoi
-
-    if (!config.continuous) stopScanner();
+    history.unshift(entry); if (history.length > 200) history.pop();
+    saveHistory(); renderHistory();
+    stopScanner();
   }
 
-  // ─── SEND TO SHEET ───────────────────────────────────────
-  async function sendToSheet(historyId) {
-    if (!config.webAppUrl) {
-      showToast('⚠️ Configurez d\'abord l\'URL du script', 'error');
-      switchTab('config');
-      return;
-    }
+  function selectOperation(op) {
+    currentOperation = op;
+    document.getElementById('opDepot').classList.toggle('active', op === 'depot');
+    document.getElementById('opRetour').classList.toggle('active', op === 'retour');
+    // Update history entry operation
+    const idx = history.findIndex(h => h.id === currentEntryId);
+    if (idx > -1) { history[idx].operation = op; saveHistory(); renderHistory(); }
+  }
 
-    const target = lastResult;
-    if (!target) return;
-
+  async function sendSingle() {
+    if (!lastResult) return;
+    // Update operation on entry
+    const idx = history.findIndex(h => h.id === currentEntryId);
+    if (idx > -1) { history[idx].operation = currentOperation; saveHistory(); }
     const statusEl = document.getElementById('sendStatus');
-    if (statusEl) statusEl.innerHTML = '<span style="font-size:12px;color:var(--text-dim)">⏳ Envoi en cours…</span>';
-
-    const params = new URLSearchParams();
-    if (config.timestamp) params.append('timestamp', new Date().toLocaleString('fr-FR'));
-    if (config.type) params.append('type', target.type);
-    params.append('value', target.value);
-    params.append('operation', currentOperation === 'depot' ? 'Dépôt' : 'Retour');
-    if (config.sheetName) params.append('sheet', config.sheetName);
-
-    const url = config.webAppUrl + (config.webAppUrl.includes('?') ? '&' : '?') + params.toString();
-
-    try {
-      // Use fetch with no-cors — Google Apps Script doGet receives GET params correctly
-      const response = await fetch(url, {
-        method: 'GET',
-        mode: 'no-cors',
-        redirect: 'follow',
-      });
-
-      if (statusEl) statusEl.innerHTML = '<span style="font-size:12px;color:var(--accent)">✓ Envoyé avec succès !</span>';
-      showToast('✓ Données envoyées vers Google Sheets', 'success');
-
-      if (historyId) {
-        const idx = history.findIndex(h => h.id === historyId);
-        if (idx > -1) { history[idx].status = 'sent'; saveHistory(); renderHistory(); }
-      }
-    } catch (err) {
-      // Fallback: image ping (bypasses CORS entirely, always works)
-      try {
-        await new Promise((resolve, reject) => {
-          const img = new Image();
-          const timer = setTimeout(() => resolve(), 3000); // assume success after 3s
-          img.onload = img.onerror = () => { clearTimeout(timer); resolve(); };
-          img.src = url;
-        });
-        if (statusEl) statusEl.innerHTML = '<span style="font-size:12px;color:var(--accent)">✓ Envoyé !</span>';
-        showToast('✓ Données envoyées vers Google Sheets', 'success');
-        if (historyId) {
-          const idx = history.findIndex(h => h.id === historyId);
-          if (idx > -1) { history[idx].status = 'sent'; saveHistory(); renderHistory(); }
-        }
-      } catch (err2) {
-        if (statusEl) statusEl.innerHTML = '<span style="font-size:12px;color:var(--danger)">✗ Erreur d\'envoi</span>';
-        showToast('✗ Erreur réseau', 'error');
-        if (historyId) {
-          const idx = history.findIndex(h => h.id === historyId);
-          if (idx > -1) { history[idx].status = 'failed'; saveHistory(); renderHistory(); }
-        }
-      }
+    statusEl.innerHTML = '<span style="font-size:12px;color:var(--text-dim)">⏳ Envoi…</span>';
+    const ok = await sendRow(lastResult.value, lastResult.type, currentOperation);
+    if (ok) {
+      statusEl.innerHTML = '<span style="font-size:12px;color:var(--accent)">✓ Envoyé !</span>';
+      showToast('✓ Envoyé vers Google Sheets', 'success');
+      if (idx > -1) { history[idx].status = 'sent'; saveHistory(); renderHistory(); }
+    } else {
+      statusEl.innerHTML = '<span style="font-size:12px;color:var(--danger)">✗ Erreur</span>';
+      showToast('✗ Erreur d\'envoi', 'error');
+      if (idx > -1) { history[idx].status = 'failed'; saveHistory(); renderHistory(); }
     }
   }
 
-  // ─── HISTORY ─────────────────────────────────────────────
-  function renderHistory() {
-    const list = document.getElementById('historyList');
-    const count = document.getElementById('historyCount');
-    count.textContent = history.length;
+  // ── MULTI SCANNER ────────────────────────────────────────
+  function setMultiOp(op) {
+    multiOperation = op;
+    document.getElementById('multiOpDepot').className = 'multi-op-pill' + (op === 'depot' ? ' active-depot' : '');
+    document.getElementById('multiOpRetour').className = 'multi-op-pill' + (op === 'retour' ? ' active-retour' : '');
+    const counter = document.getElementById('multiCounter');
+    counter.className = 'multi-counter' + (op === 'retour' ? ' retour' : '');
+    updateMultiSendBtn();
+  }
 
-    if (!history.length) {
-      list.innerHTML = `<div class="empty-state"><div class="empty-icon">📭</div><div>Aucun scan pour le moment</div><div style="font-size:12px;color:var(--text-dim)">Vos scans apparaîtront ici</div></div>`;
+  function toggleMultiScanner() {
+    scanningMulti ? stopMultiScanner() : startMultiScanner();
+  }
+
+  function startMultiScanner() {
+    const btn = document.getElementById('multiScanBtn');
+    scannerMulti = new Html5Qrcode("readerMulti");
+    scannerMulti.start({ facingMode:"environment" }, { fps:10, qrbox:{width:250,height:250} }, onMultiScanSuccess, ()=>{})
+      .then(() => {
+        scanningMulti = true;
+        btn.textContent = '⏹ Arrêter le scan';
+        btn.classList.add('scanning');
+      })
+      .catch(() => showToast('❌ Caméra inaccessible', 'error'));
+  }
+
+  function stopMultiScanner() {
+    if (scannerMulti && scanningMulti) scannerMulti.stop().catch(()=>{});
+    scanningMulti = false;
+    const btn = document.getElementById('multiScanBtn');
+    btn.textContent = '📷 Démarrer le scan';
+    btn.classList.remove('scanning');
+  }
+
+  function onMultiScanSuccess(text) {
+    if (text === lastMultiScan) return;
+    lastMultiScan = text;
+    setTimeout(() => lastMultiScan = '', 1500); // reset debounce after 1.5s
+
+    if (config.vibrate && navigator.vibrate) navigator.vibrate(50);
+    const entry = { value: text, type: 'SCAN', time: new Date().toISOString() };
+    multiQueue.push(entry);
+    renderMultiList();
+    updateMultiSendBtn();
+    showToast('✓ ' + truncate(text, 20) + ' ajouté', 'success');
+  }
+
+  function removeMultiItem(idx) {
+    multiQueue.splice(idx, 1);
+    renderMultiList();
+    updateMultiSendBtn();
+  }
+
+  function renderMultiList() {
+    const list = document.getElementById('multiList');
+    const empty = document.getElementById('multiEmpty');
+    const counter = document.getElementById('multiCounter');
+    counter.textContent = multiQueue.length;
+
+    if (!multiQueue.length) {
+      list.innerHTML = '';
+      list.appendChild(empty || createEmptyEl());
+      document.getElementById('multiEmpty').style.display = 'flex';
       return;
     }
-
-    const icons = { QR_CODE: '⬜', EAN_13: '▦', EAN_8: '▦', CODE_128: '▤', CODE_39: '▤', UPC_A: '▦', DEFAULT: '📷' };
-    const statusBadge = { sent: '<span class="badge badge-sent">✓ Envoyé</span>', failed: '<span class="badge badge-failed">✗ Erreur</span>', pending: '<span class="badge badge-pending">⏳ En attente</span>' };
-
-    list.innerHTML = history.slice(0, 50).map(h => `
-      <div class="history-item ${h.status}">
-        <div class="history-item-icon">${icons[h.type] || icons.DEFAULT}</div>
-        <div class="history-item-content">
-          <div class="history-item-value">${escHtml(h.value)}</div>
-          <div class="history-item-meta">
-            <span class="history-item-time">${formatTime(new Date(h.time))}</span>
-            <span style="font-size:10px;color:var(--text-dim)">${h.type}</span>
-            ${statusBadge[h.status] || ''}
-          </div>
-        </div>
+    list.innerHTML = multiQueue.map((item, i) => `
+      <div class="multi-item">
+        <span class="multi-item-num">#${i+1}</span>
+        <span class="multi-item-value">${escHtml(item.value)}</span>
+        <button class="multi-item-del" onclick="removeMultiItem(${i})">✕</button>
       </div>
     `).join('');
   }
 
-  function saveHistory() {
-    localStorage.setItem('scan_history', JSON.stringify(history));
+  function createEmptyEl() {
+    const d = document.createElement('div');
+    d.className = 'multi-empty'; d.id = 'multiEmpty';
+    d.innerHTML = '<div style="font-size:32px">📭</div><div>Aucun scan</div><div style="font-size:12px;color:var(--text-dim)">Démarrez le scan pour remplir la liste</div>';
+    return d;
   }
 
-  // ─── CONFIG ───────────────────────────────────────────────
-  function loadConfig() {
-    document.getElementById('cfgWebAppUrl').value = config.webAppUrl || '';
-    document.getElementById('cfgSheetName').value = config.sheetName || '';
-    document.getElementById('cfgStartCol').value = config.startCol || 'A';
-    setToggle('togTimestamp', config.timestamp !== false);
-    setToggle('togType', config.type !== false);
-    setToggle('togAutoSend', config.autoSend !== false);
-    setToggle('togVibrate', config.vibrate !== false);
-    setToggle('togContinuous', !!config.continuous);
+  function updateMultiSendBtn() {
+    const btn = document.getElementById('multiSendBtn');
+    const n = multiQueue.length;
+    btn.disabled = n === 0;
+    btn.className = 'multi-send-btn' + (multiOperation === 'retour' ? ' retour' : '');
+    const icon = multiOperation === 'depot' ? '📥' : '📤';
+    const label = multiOperation === 'depot' ? 'Dépôt' : 'Retour';
+    btn.textContent = n === 0 ? `↑ Envoyer vers Sheet` : `${icon} Envoyer ${n} ${label}${n>1?'s':''} vers Sheet`;
   }
 
-  function saveConfig() {
-    config.webAppUrl = document.getElementById('cfgWebAppUrl').value.trim();
-    config.sheetName = document.getElementById('cfgSheetName').value.trim();
-    config.startCol = document.getElementById('cfgStartCol').value.trim() || 'A';
-    config.timestamp = isOn('togTimestamp');
-    config.type = isOn('togType');
-    config.autoSend = isOn('togAutoSend');
-    config.vibrate = isOn('togVibrate');
-    config.continuous = isOn('togContinuous');
-    localStorage.setItem('scan_config', JSON.stringify(config));
-    updateStatus();
-    showToast('✓ Configuration sauvegardée', 'success');
+  async function sendMulti() {
+    if (!multiQueue.length) return;
+    stopMultiScanner();
+    const btn = document.getElementById('multiSendBtn');
+    btn.disabled = true;
+    btn.textContent = '⏳ Envoi en cours…';
+
+    const progress = document.getElementById('multiProgress');
+    const bar = document.getElementById('multiProgressBar');
+    progress.style.display = 'block';
+    bar.className = 'progress-bar' + (multiOperation === 'retour' ? ' retour' : '');
+
+    let sent = 0, failed = 0;
+    const total = multiQueue.length;
+    const batchId = Date.now();
+
+    for (let i = 0; i < multiQueue.length; i++) {
+      const item = multiQueue[i];
+      const ok = await sendRow(item.value, item.type, multiOperation);
+      if (ok) sent++; else failed++;
+      bar.style.width = Math.round(((i+1)/total)*100) + '%';
+    }
+
+    // Add to history as a batch
+    const batchEntry = {
+      id: batchId,
+      value: `Lot de ${total} scan(s)`,
+      type: 'BATCH',
+      time: new Date().toISOString(),
+      status: failed === 0 ? 'sent' : (sent === 0 ? 'failed' : 'sent'),
+      operation: multiOperation,
+      mode: 'multi',
+      count: total,
+      details: [...multiQueue]
+    };
+    history.unshift(batchEntry);
+    saveHistory(); renderHistory();
+
+    setTimeout(() => { progress.style.display = 'none'; bar.style.width = '0%'; }, 800);
+
+    if (failed === 0) {
+      showToast(`✓ ${sent} scan(s) envoyés !`, 'success');
+    } else {
+      showToast(`⚠️ ${sent} ok, ${failed} erreur(s)`, 'error');
+    }
+
+    multiQueue = [];
+    renderMultiList();
+    updateMultiSendBtn();
+    lastMultiScan = '';
   }
 
-  function updateStatus() {
-    const dot = document.getElementById('statusDot');
-    dot.classList.toggle('connected', !!config.webAppUrl);
-    dot.title = config.webAppUrl ? 'Connecté à Google Sheets' : 'Non configuré';
-  }
-
-  // ─── TOGGLES ─────────────────────────────────────────────
-  function toggle(id) {
-    const el = document.getElementById(id);
-    el.classList.toggle('on');
-  }
-  function setToggle(id, val) {
-    document.getElementById(id).classList.toggle('on', val);
-  }
-  function isOn(id) {
-    return document.getElementById(id).classList.contains('on');
-  }
-
-  // ─── UTILS ───────────────────────────────────────────────
-  function formatTime(d) {
-    return d.toLocaleDateString('fr-FR', { day: '2-digit', month: '2-digit' }) + ' ' +
-           d.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
-  }
-
-  function escHtml(str) {
-    return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
-  }
-
-  function copyResult() {
-    if (lastResult) {
-      navigator.clipboard.writeText(lastResult.value).then(() => showToast('📋 Copié !', 'success'));
+  // ── SEND CORE ────────────────────────────────────────────
+  async function sendRow(value, type, operation) {
+    const url = config.webAppUrl;
+    if (!url) return false;
+    const params = new URLSearchParams();
+    if (config.timestamp) params.append('timestamp', new Date().toLocaleString('fr-FR'));
+    if (config.type) params.append('type', type);
+    params.append('value', value);
+    params.append('operation', operation === 'depot' ? 'Dépôt' : 'Retour');
+    if (config.sheetName) params.append('sheet', config.sheetName);
+    const fullUrl = url + '?' + params.toString();
+    try {
+      await fetch(fullUrl, { method:'GET', mode:'no-cors', redirect:'follow' });
+      return true;
+    } catch {
+      try {
+        await new Promise(resolve => {
+          const img = new Image();
+          setTimeout(resolve, 3000);
+          img.onload = img.onerror = resolve;
+          img.src = fullUrl;
+        });
+        return true;
+      } catch { return false; }
     }
   }
 
-  function copyScript() {
-    const code = document.getElementById('scriptCode').textContent.trim();
-    navigator.clipboard.writeText(code).then(() => showToast('📋 Code copié !', 'success'));
+  // ── HISTORY ──────────────────────────────────────────────
+  function renderHistory() {
+    const list = document.getElementById('historyList');
+    document.getElementById('historyCount').textContent = history.length;
+    if (!history.length) {
+      list.innerHTML = '<div class="empty-state"><div class="empty-icon">📭</div><div>Aucun scan</div></div>';
+      return;
+    }
+    list.innerHTML = history.slice(0, 100).map(h => {
+      const opBadge = h.operation === 'retour'
+        ? '<span class="badge badge-retour">📤 Retour</span>'
+        : '<span class="badge badge-depot">📥 Dépôt</span>';
+      const statusBadge = h.status === 'sent'
+        ? '<span class="badge badge-sent">✓ Envoyé</span>'
+        : h.status === 'failed' ? '<span class="badge badge-failed">✗ Erreur</span>' : '';
+      const multiBadge = h.mode === 'multi' ? `<span class="badge badge-multi">📦 ×${h.count||''}</span>` : '';
+      return `<div class="history-item">
+        <div class="history-item-icon">${h.mode==='multi'?'📦':'🔲'}</div>
+        <div class="history-item-content">
+          <div class="history-item-value">${escHtml(h.value)}</div>
+          <div class="history-item-meta">
+            <span class="history-item-time">${formatTime(new Date(h.time))}</span>
+            ${opBadge}${multiBadge}${statusBadge}
+          </div>
+        </div>
+      </div>`;
+    }).join('');
   }
 
+  function saveHistory() { localStorage.setItem('scan_history', JSON.stringify(history)); }
+
+  // ── CONFIG ───────────────────────────────────────────────
+  function loadConfig() {
+    document.getElementById('cfgWebAppUrl').value = config.webAppUrl || '';
+    document.getElementById('cfgSheetName').value = config.sheetName || '';
+    setToggle('togTimestamp', config.timestamp !== false);
+    setToggle('togType', config.type !== false);
+    setToggle('togVibrate', config.vibrate !== false);
+  }
+
+  function saveConfig() {
+    config.webAppUrl = document.getElementById('cfgWebAppUrl').value.trim() || DEFAULT_URL;
+    config.sheetName = document.getElementById('cfgSheetName').value.trim();
+    config.timestamp = isOn('togTimestamp');
+    config.type = isOn('togType');
+    config.vibrate = isOn('togVibrate');
+    localStorage.setItem('scan_config', JSON.stringify(config));
+    showToast('✓ Sauvegardé', 'success');
+  }
+
+  // ── HELPERS ──────────────────────────────────────────────
+  function toggle(id) { document.getElementById(id).classList.toggle('on'); }
+  function setToggle(id, val) { document.getElementById(id).classList.toggle('on', val); }
+  function isOn(id) { return document.getElementById(id).classList.contains('on'); }
+  function formatTime(d) { return d.toLocaleDateString('fr-FR',{day:'2-digit',month:'2-digit'})+' '+d.toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'}); }
+  function escHtml(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+  function truncate(s, n) { return s.length > n ? s.slice(0,n)+'…' : s; }
+  function copyResult() { if (lastResult) navigator.clipboard.writeText(lastResult.value).then(()=>showToast('📋 Copié !','success')); }
+
   let toastTimer;
-  function showToast(msg, type = '') {
+  function showToast(msg, type='') {
     const t = document.getElementById('toast');
-    t.textContent = msg;
-    t.className = 'toast ' + type + ' show';
+    t.textContent = msg; t.className = 'toast '+type+' show';
     clearTimeout(toastTimer);
-    toastTimer = setTimeout(() => t.classList.remove('show'), 2800);
+    toastTimer = setTimeout(()=>t.classList.remove('show'), 2800);
   }
 </script>
 </body>
