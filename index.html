@@ -308,7 +308,7 @@
 <body>
 
 <header>
-  <div class="logo">Scan<span>Sheet</span> <span style="font-size:11px;color:var(--text-dim);font-weight:400;letter-spacing:0">v1.1</span></div>
+  <div class="logo">Scan<span>Sheet</span> <span style="font-size:11px;color:var(--text-dim);font-weight:400;letter-spacing:0">v1.2</span></div>
   <div class="status-dot" title="Connecté"></div>
 </header>
 
@@ -393,6 +393,16 @@
       </div>
     </div>
 
+    <!-- Viewfinder caméra multi -->
+    <div id="multiCameraWrap" style="display:none;padding:12px 16px 0">
+      <div class="camera-container" style="max-width:100%;margin:0">
+        <div id="readerMulti" style="width:100%;height:100%"></div>
+        <div class="scan-overlay">
+          <div class="scan-frame"><span></span><div class="scan-line"></div></div>
+        </div>
+      </div>
+    </div>
+
     <div class="multi-list-wrap" id="multiList">
       <div class="multi-empty" id="multiEmpty">
         <div style="font-size:32px">📭</div>
@@ -411,11 +421,6 @@
       <button class="multi-scan-btn" id="multiScanBtn" onclick="toggleMultiScanner()">
         📷 Démarrer le scan
       </button>
-
-      <!-- Caméra cachée pour multi -->
-      <div style="height:0;overflow:hidden">
-        <div id="readerMulti"></div>
-      </div>
     </div>
   </div>
 
@@ -633,19 +638,25 @@
 
   function startMultiScanner() {
     const btn = document.getElementById('multiScanBtn');
+    const wrap = document.getElementById('multiCameraWrap');
+    wrap.style.display = 'block';
     scannerMulti = new Html5Qrcode("readerMulti");
-    scannerMulti.start({ facingMode:"environment" }, { fps:10, qrbox:{width:250,height:250} }, onMultiScanSuccess, ()=>{})
+    scannerMulti.start({ facingMode:"environment" }, { fps:10, qrbox:{width:220,height:220}, aspectRatio:1.0 }, onMultiScanSuccess, ()=>{})
       .then(() => {
         scanningMulti = true;
         btn.textContent = '⏹ Arrêter le scan';
         btn.classList.add('scanning');
       })
-      .catch(() => showToast('❌ Caméra inaccessible', 'error'));
+      .catch(() => {
+        wrap.style.display = 'none';
+        showToast('❌ Caméra inaccessible', 'error');
+      });
   }
 
   function stopMultiScanner() {
     if (scannerMulti && scanningMulti) scannerMulti.stop().catch(()=>{});
     scanningMulti = false;
+    document.getElementById('multiCameraWrap').style.display = 'none';
     const btn = document.getElementById('multiScanBtn');
     btn.textContent = '📷 Démarrer le scan';
     btn.classList.remove('scanning');
