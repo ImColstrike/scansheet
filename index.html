@@ -308,7 +308,7 @@
 <body>
 
 <header>
-  <div class="logo">Scan<span>Sheet</span> <span style="font-size:11px;color:var(--text-dim);font-weight:400;letter-spacing:0">v1.0</span></div>
+  <div class="logo">Scan<span>Sheet</span> <span style="font-size:11px;color:var(--text-dim);font-weight:400;letter-spacing:0">v1.1</span></div>
   <div class="status-dot" title="Connecté"></div>
 </header>
 
@@ -448,6 +448,11 @@
         <label>Nom de la feuille (optionnel)</label>
         <input class="input" id="cfgSheetName" placeholder="Feuille1" />
       </div>
+      <div class="config-row">
+        <label>Nom du livreur</label>
+        <input class="input" id="cfgLivreur" placeholder="Ex : Jean Dupont" />
+        <small>Sera ajouté à chaque envoi dans Google Sheets</small>
+      </div>
     </div>
 
     <div class="config-group">
@@ -491,6 +496,7 @@
   let config = JSON.parse(localStorage.getItem('scan_config') || 'null') || {
     webAppUrl: DEFAULT_URL,
     sheetName: '',
+    livreur: '',
     timestamp: true,
     type: true,
     vibrate: true,
@@ -763,6 +769,7 @@
     if (config.type) params.append('type', type);
     params.append('value', value);
     params.append('operation', operation === 'depot' ? 'Dépôt' : 'Retour');
+    if (config.livreur) params.append('livreur', config.livreur);
     if (config.sheetName) params.append('sheet', config.sheetName);
     const fullUrl = url + '?' + params.toString();
     try {
@@ -816,6 +823,7 @@
   function loadConfig() {
     document.getElementById('cfgWebAppUrl').value = config.webAppUrl || '';
     document.getElementById('cfgSheetName').value = config.sheetName || '';
+    document.getElementById('cfgLivreur').value = config.livreur || '';
     setToggle('togTimestamp', config.timestamp !== false);
     setToggle('togType', config.type !== false);
     setToggle('togVibrate', config.vibrate !== false);
@@ -824,6 +832,7 @@
   function saveConfig() {
     config.webAppUrl = document.getElementById('cfgWebAppUrl').value.trim() || DEFAULT_URL;
     config.sheetName = document.getElementById('cfgSheetName').value.trim();
+    config.livreur = document.getElementById('cfgLivreur').value.trim();
     config.timestamp = isOn('togTimestamp');
     config.type = isOn('togType');
     config.vibrate = isOn('togVibrate');
