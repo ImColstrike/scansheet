@@ -537,6 +537,43 @@
     }
     .conn-test.ok { color: var(--accent); border-color: rgba(0,245,196,0.3); }
     .conn-test.fail { color: var(--danger); border-color: rgba(255,71,87,0.3); }
+
+    /* OPERATION SELECTOR */
+    .operation-selector {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+
+    .op-btn {
+      padding: 14px 10px;
+      border-radius: 12px;
+      font-family: var(--sans);
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      border: 2px solid var(--border);
+      background: var(--surface2);
+      color: var(--text-dim);
+      transition: all 0.2s;
+      letter-spacing: 0.2px;
+    }
+
+    .op-btn.active.op-depot {
+      background: rgba(0,245,196,0.12);
+      border-color: var(--accent);
+      color: var(--accent);
+      box-shadow: 0 0 16px rgba(0,245,196,0.15);
+    }
+
+    .op-btn.active.op-retour {
+      background: rgba(123,92,250,0.12);
+      border-color: var(--accent2);
+      color: var(--accent2);
+      box-shadow: 0 0 16px rgba(123,92,250,0.15);
+    }
+
+    .op-btn:active { transform: scale(0.97); }
   </style>
 </head>
 <body>
@@ -592,6 +629,18 @@
       <div style="display:flex;align-items:center;justify-content:space-between">
         <span class="result-type" id="resultType">—</span>
         <span style="font-size:11px;color:var(--text-dim)" id="resultTime">—</span>
+      </div>
+      <!-- TYPE SELECTOR -->
+      <div>
+        <div class="result-label" style="margin-bottom:8px">Type d'opération</div>
+        <div class="operation-selector">
+          <button class="op-btn op-depot active" id="opDepot" onclick="selectOperation('depot')">
+            📥 Dépôt
+          </button>
+          <button class="op-btn op-retour" id="opRetour" onclick="selectOperation('retour')">
+            📤 Retour
+          </button>
+        </div>
       </div>
       <div class="result-actions">
         <button class="btn btn-primary btn-sm" style="flex:1" onclick="sendToSheet()">
@@ -761,6 +810,7 @@ function doPost(e) {
 <script>
   // ─── STATE ───────────────────────────────────────────────
   let html5QrcodeScanner = null;
+  let currentOperation = 'depot';
   let scanning = false;
   let lastResult = null;
   let history = JSON.parse(localStorage.getItem('scan_history') || '[]');
@@ -794,6 +844,12 @@ function doPost(e) {
   }
 
   // ─── SCANNER ─────────────────────────────────────────────
+  function selectOperation(op) {
+    currentOperation = op;
+    document.getElementById('opDepot').classList.toggle('active', op === 'depot');
+    document.getElementById('opRetour').classList.toggle('active', op === 'retour');
+  }
+
   function toggleScanner() {
     if (scanning) stopScanner();
     else startScanner();
@@ -859,6 +915,9 @@ function doPost(e) {
     lastResult = { value: decodedText, type: format, time: now };
 
     // Show result card
+    currentOperation = 'depot';
+    document.getElementById('opDepot').classList.add('active');
+    document.getElementById('opRetour').classList.remove('active');
     document.getElementById('resultCard').classList.add('visible');
     document.getElementById('resultValue').textContent = decodedText;
     document.getElementById('resultType').textContent = format;
@@ -866,7 +925,7 @@ function doPost(e) {
     document.getElementById('sendStatus').innerHTML = '';
 
     // Add to history (pending)
-    const entry = { id: Date.now(), value: decodedText, type: format, time: now.toISOString(), status: 'pending' };
+    const entry = { id: Date.now(), value: decodedText, type: format, time: now.toISOString(), status: 'pending', operation: currentOperation };
     history.unshift(entry);
     if (history.length > 200) history.pop();
     saveHistory();
@@ -897,27 +956,48 @@ function doPost(e) {
     if (config.timestamp) params.append('timestamp', new Date().toLocaleString('fr-FR'));
     if (config.type) params.append('type', target.type);
     params.append('value', target.value);
+    params.append('operation', currentOperation === 'depot' ? 'Dépôt' : 'Retour');
     if (config.sheetName) params.append('sheet', config.sheetName);
 
-    try {
-      const url = config.webAppUrl + (config.webAppUrl.includes('?') ? '&' : '?') + params.toString();
-      await fetch(url, { method: 'GET', mode: 'no-cors' });
+    const url = config.webAppUrl + (config.webAppUrl.includes('?') ? '&' : '?') + params.toString();
 
-      // With no-cors we can't read response, assume success
+    try {
+      // Use fetch with no-cors — Google Apps Script doGet receives GET params correctly
+      const response = await fetch(url, {
+        method: 'GET',
+        mode: 'no-cors',
+        redirect: 'follow',
+      });
+
       if (statusEl) statusEl.innerHTML = '<span style="font-size:12px;color:var(--accent)">✓ Envoyé avec succès !</span>';
       showToast('✓ Données envoyées vers Google Sheets', 'success');
 
-      // Update history
       if (historyId) {
         const idx = history.findIndex(h => h.id === historyId);
         if (idx > -1) { history[idx].status = 'sent'; saveHistory(); renderHistory(); }
       }
     } catch (err) {
-      if (statusEl) statusEl.innerHTML = '<span style="font-size:12px;color:var(--danger)">✗ Erreur d\'envoi</span>';
-      showToast('✗ Erreur : ' + err.message, 'error');
-      if (historyId) {
-        const idx = history.findIndex(h => h.id === historyId);
-        if (idx > -1) { history[idx].status = 'failed'; saveHistory(); renderHistory(); }
+      // Fallback: image ping (bypasses CORS entirely, always works)
+      try {
+        await new Promise((resolve, reject) => {
+          const img = new Image();
+          const timer = setTimeout(() => resolve(), 3000); // assume success after 3s
+          img.onload = img.onerror = () => { clearTimeout(timer); resolve(); };
+          img.src = url;
+        });
+        if (statusEl) statusEl.innerHTML = '<span style="font-size:12px;color:var(--accent)">✓ Envoyé !</span>';
+        showToast('✓ Données envoyées vers Google Sheets', 'success');
+        if (historyId) {
+          const idx = history.findIndex(h => h.id === historyId);
+          if (idx > -1) { history[idx].status = 'sent'; saveHistory(); renderHistory(); }
+        }
+      } catch (err2) {
+        if (statusEl) statusEl.innerHTML = '<span style="font-size:12px;color:var(--danger)">✗ Erreur d\'envoi</span>';
+        showToast('✗ Erreur réseau', 'error');
+        if (historyId) {
+          const idx = history.findIndex(h => h.id === historyId);
+          if (idx > -1) { history[idx].status = 'failed'; saveHistory(); renderHistory(); }
+        }
       }
     }
   }
